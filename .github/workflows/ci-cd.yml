@@ -48,7 +48,7 @@ jobs:
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       run: |
-        echo ""Starting deployment to Railway..."
+        echo "Starting deployment to Railway..."
         railway up --detach
         echo "Deployment completed!"
         
