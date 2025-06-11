@@ -31,6 +31,10 @@ jobs:
     
   deploy:
     runs-on: ubuntu-latest
+    needs: build
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     container: ghcr.io/railwayapp/cli:latest
     env:
       SVC_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -38,3 +42,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: railway up --service=${{ env.SVC_ID }}
+      - name: Deploy Success
+        run: echo "Deployed to Railway successfully"
