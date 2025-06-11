@@ -40,20 +40,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Install Railway CLI
-      run: |
-        curl -fsSL https://railway.app/install.sh | sh
-        echo "$HOME/.railway/bin" >> $GITHUB_PATH
-        
     - name: Deploy to Railway
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      run: |
-        echo "Starting deployment to Railway..."
-        echo "Railway CLI version:"
-        railway version
-        echo "Deploying application..."
-        railway up --detach
+      uses: railway-app/cli@v3
+      with:
+        railway_token: ${{ secrets.RAILWAY_TOKEN }}
+        command: up --detach
         
     - name: Deploy Success
       run: echo "Deployed to Railway successfully"
