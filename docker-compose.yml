@@ -34,7 +34,6 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
-      # Connection string para SQL Server
       ConnectionStrings__DefaultConnection: "Host=database.server;Port=5432;Database=TwitterAPI;Username=postgres;Password=YourStrong@Passw0rd;Trust Server Certificate=true"
     ports:
       - "5000:8080"

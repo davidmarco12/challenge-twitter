@@ -20,10 +20,8 @@ namespace Infrastructure.Extentions
 
                 var context = services.GetRequiredService<ApplicationDbContext>();
 
-                // Esperar hasta que PostgreSQL esté disponible
                 await WaitForDatabaseAsync(context, logger);
 
-                // Aplicar migraciones
                 logger.LogInformation("Applying database migrations...");
                 await context.Database.MigrateAsync();
 

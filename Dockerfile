@@ -1,5 +1,4 @@
-﻿# Dockerfile (en la raíz: TwitterAPI/Dockerfile)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
 EXPOSE 8080
@@ -9,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Rutas correctas según tu estructura
+
 COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
