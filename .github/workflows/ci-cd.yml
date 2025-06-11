@@ -32,7 +32,6 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
-    needs: build
 
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -48,12 +47,12 @@ jobs:
     - name: Deploy to Railway
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       run: |
-        echo " Starting deployment to Railway..."
-        railway login --token $RAILWAY_TOKEN
-        railway link $RAILWAY_PROJECT_ID
-        railway up
+        echo "Starting deployment to Railway..."
+        echo "Railway CLI version:"
+        railway version
+        echo "Deploying application..."
+        railway up --detach
         
     - name: Deploy Success
       run: echo "Deployed to Railway successfully"
