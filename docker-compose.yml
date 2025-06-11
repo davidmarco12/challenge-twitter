@@ -1,0 +1,65 @@
+﻿version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: tweetmate-sqlserver
+    hostname: sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: TweetMate123!
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./scripts/init-database.sql:/tmp/init-database.sql:ro
+    networks:
+      - tweetmate-network
+    healthcheck:
+      test: >
+        bash -c "
+        if /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -Q 'SELECT 1' > /dev/null 2>&1; then
+          if ! /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -d TWITTER_DEV -Q 'SELECT 1' > /dev/null 2>&1; then
+            echo 'Initializing database...'
+            /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -i /tmp/init-database.sql
+          fi
+          exit 0
+        else
+          exit 1
+        fi"
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+
+  tweetmate-api:
+    build:
+      context: .
+      dockerfile: Dockerfile  # ✅ Dockerfile ahora está en la raíz
+    container_name: tweetmate-api
+    hostname: tweetmate-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DBConnectionString=Server=sqlserver,1433;Database=TWITTER_DEV;User Id=sa;Password=TweetMate123!;Encrypt=False;TrustServerCertificate=True;
+      - Logging__LogLevel__Default=Information
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    depends_on:
+      sqlserver:
+        condition: service_healthy    
+    networks:
+      - tweetmate-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+    driver: local
+
+networks:
+  tweetmate-network:
+    driver: bridge

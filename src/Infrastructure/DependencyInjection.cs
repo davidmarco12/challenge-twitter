@@ -15,11 +15,13 @@ namespace Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
+
             // BD
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DBConnectionString"));
             });
+
 
             services.AddMemoryCache(options =>
             {
