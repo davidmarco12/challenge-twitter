@@ -1,0 +1,28 @@
+# Railway ignore file
+.git/
+.gitignore
+README.md
+.env
+.env.local
+.env.example
+node_modules/
+npm-debug.log*
+*.log
+
+# Development files
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# Local database
+*.db
+*.sqlite
+postgres/
+sqlserver/
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
