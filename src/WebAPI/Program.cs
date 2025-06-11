@@ -15,18 +15,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-try
-{
-    app.Logger.LogInformation("Initializing database...");
-    await app.Services.ApplyMigrationsAsync();
-    app.Logger.LogInformation("Database initialized successfully!");
-}
-catch (Exception ex)
-{
-    app.Logger.LogError(ex, "Failed to initialize database");
-    throw; // Fallar si no puede crear la DB
-}
-
+await app.Services.ApplyMigrationsAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

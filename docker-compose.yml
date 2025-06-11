@@ -1,65 +1,64 @@
-﻿version: '3.8'
+﻿# docker-compose.yml (en la raíz: TwitterAPI/docker-compose.yml)
+version: '3.8'
 
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: tweetmate-sqlserver
-    hostname: sqlserver
-    environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: TweetMate123!
-      MSSQL_PID: Developer
+  # SQL Server Database
+  database.server:
+    image: postgres:17.5-alpine
+    container_name: database.server
+    hostname: database.server
     ports:
-      - "1433:1433"
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: TwitterAPI
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourStrong@Passw0rd
     volumes:
-      - sqlserver_data:/var/opt/mssql
-      - ./scripts/init-database.sql:/tmp/init-database.sql:ro
+      - postgres_data:/var/lib/postgresql/data
     networks:
-      - tweetmate-network
+      - twitterapi-network
+    restart: unless-stopped
     healthcheck:
-      test: >
-        bash -c "
-        if /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -Q 'SELECT 1' > /dev/null 2>&1; then
-          if ! /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -d TWITTER_DEV -Q 'SELECT 1' > /dev/null 2>&1; then
-            echo 'Initializing database...'
-            /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TweetMate123! -i /tmp/init-database.sql
-          fi
-          exit 0
-        else
-          exit 1
-        fi"
-      interval: 30s
-      timeout: 30s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d TwitterAPI"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 60s
+      start_period: 30s
 
-  tweetmate-api:
+  # .NET API Application
+  twitterapi-app:
     build:
       context: .
-      dockerfile: Dockerfile  # ✅ Dockerfile ahora está en la raíz
-    container_name: tweetmate-api
-    hostname: tweetmate-api
+      dockerfile: Dockerfile
+    container_name: twitterapi-app
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DBConnectionString=Server=sqlserver,1433;Database=TWITTER_DEV;User Id=sa;Password=TweetMate123!;Encrypt=False;TrustServerCertificate=True;
-      - Logging__LogLevel__Default=Information
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      # Connection string para SQL Server
+      ConnectionStrings__DefaultConnection: "Host=database.server;Port=5432;Database=TwitterAPI;Username=postgres;Password=YourStrong@Passw0rd;Trust Server Certificate=true"
     ports:
       - "5000:8080"
-      - "5001:8081"
     depends_on:
-      sqlserver:
-        condition: service_healthy    
+      database.server:
+        condition: service_healthy
     networks:
-      - tweetmate-network
+      - twitterapi-network
+    restart: unless-stopped
     volumes:
       - ./logs:/app/logs
-    restart: unless-stopped
+  admin:
+    image: adminer
+    restart: always
+    depends_on: 
+      - database.server
+    ports:
+      - 8080:8080
+
 
 volumes:
-  sqlserver_data:
+  postgres_data:
     driver: local
 
 networks:
-  tweetmate-network:
+  twitterapi-network:
     driver: bridge

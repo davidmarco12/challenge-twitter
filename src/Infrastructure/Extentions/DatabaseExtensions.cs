@@ -1,12 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Npgsql;
 
 namespace Infrastructure.Extentions
 {
@@ -17,81 +13,59 @@ namespace Infrastructure.Extentions
             using var scope = serviceProvider.CreateScope();
             var services = scope.ServiceProvider;
             var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
-            var configuration = services.GetRequiredService<IConfiguration>();
 
             try
             {
-                logger.LogInformation("Starting database initialization...");
+                logger.LogInformation("Starting PostgreSQL database initialization...");
 
-                // ✅ Paso 1: Crear la base de datos si no existe
-                await EnsureDatabaseExistsAsync(configuration, logger);
-
-                // ✅ Paso 2: Crear tablas y schemas con EF
                 var context = services.GetRequiredService<ApplicationDbContext>();
-                logger.LogInformation("Creating database schema and tables...");
 
-                await context.Database.EnsureCreatedAsync();
+                // Esperar hasta que PostgreSQL esté disponible
+                await WaitForDatabaseAsync(context, logger);
 
-                logger.LogInformation("Database initialization completed successfully!");
+                // Aplicar migraciones
+                logger.LogInformation("Applying database migrations...");
+                await context.Database.MigrateAsync();
+
+                logger.LogInformation("PostgreSQL database initialization completed successfully!");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while initializing database");
+                logger.LogError(ex, "An error occurred while initializing PostgreSQL database");
                 throw;
             }
         }
 
-        private static async Task EnsureDatabaseExistsAsync(IConfiguration configuration, ILogger logger)
+        private static async Task WaitForDatabaseAsync(ApplicationDbContext context, ILogger logger)
         {
-            var connectionString = configuration.GetConnectionString("DBConnectionString");
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            var databaseName = builder.InitialCatalog;
+            var maxRetries = 20;
+            var delay = TimeSpan.FromSeconds(5);
 
-            // ✅ Conectar a master para crear la DB
-            builder.InitialCatalog = "master";
-            var masterConnectionString = builder.ConnectionString;
-
-            // ✅ Retry logic para esperar a que SQL Server esté listo
-            for (int i = 0; i < 10; i++)
+            for (int i = 1; i <= maxRetries; i++)
             {
                 try
                 {
-                    using var connection = new SqlConnection(masterConnectionString);
-                    await connection.OpenAsync();
+                    logger.LogInformation("Attempting to connect to PostgreSQL (attempt {Attempt}/{MaxRetries})...", i, maxRetries);
 
-                    // Verificar si la base de datos existe
-                    var checkDbCommand = new SqlCommand(
-                        $"SELECT COUNT(*) FROM sys.databases WHERE name = '{databaseName}'",
-                        connection);
+                    await context.Database.CanConnectAsync();
 
-                    var exists = (int)await checkDbCommand.ExecuteScalarAsync() > 0;
-
-                    if (!exists)
-                    {
-                        logger.LogInformation($"Creating database {databaseName}...");
-
-                        var createDbCommand = new SqlCommand(
-                            $"CREATE DATABASE [{databaseName}]",
-                            connection);
-
-                        await createDbCommand.ExecuteNonQueryAsync();
-                        logger.LogInformation($"Database {databaseName} created successfully");
-                    }
-                    else
-                    {
-                        logger.LogInformation($"Database {databaseName} already exists");
-                    }
-
-                    return; // Success
+                    logger.LogInformation("Successfully connected to PostgreSQL!");
+                    return;
                 }
-                catch (Exception ex) when (i < 9) // Retry logic
+                catch (Exception ex) when (ex is NpgsqlException || ex is InvalidOperationException)
                 {
-                    logger.LogWarning($"Attempt {i + 1} failed to connect to SQL Server: {ex.Message}");
-                    await Task.Delay(5000); // Wait 5 seconds before retry
+                    if (i == maxRetries)
+                    {
+                        logger.LogError("Failed to connect to PostgreSQL after {MaxRetries} attempts", maxRetries);
+                        throw;
+                    }
+
+                    logger.LogWarning("Connection attempt {Attempt} failed: {Error}. Retrying in {Delay} seconds...",
+                        i, ex.Message, delay.TotalSeconds);
+
+                    await Task.Delay(delay);
                 }
             }
-
-            throw new InvalidOperationException("Could not connect to SQL Server after multiple attempts");
         }
     }
 }

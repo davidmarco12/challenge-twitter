@@ -19,7 +19,7 @@ namespace Infrastructure
             // BD
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DBConnectionString"));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             });
 
 
@@ -32,6 +32,7 @@ namespace Infrastructure
             // Cache Service
             services.AddScoped<ICacheService, MemoryCacheService>();
 
+            // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserFollowRepository, UserFollowRepository>();
             services.AddScoped<ITweetRepository, TweetRepository>();
