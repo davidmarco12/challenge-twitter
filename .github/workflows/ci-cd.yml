@@ -30,17 +30,26 @@ jobs:
       run: echo "Build completed successfully"
     
   deploy:
+    name: Deploy to Railway
     runs-on: ubuntu-latest
     needs: build
-
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    container: ghcr.io/railwayapp/cli:latest
-    env:
-      SVC_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    
     steps:
-      - uses: actions/checkout@v3
-      - run: railway up --service=${{ env.SVC_ID }}
-      - name: Deploy Success
-        run: echo "Deployed to Railway successfully"
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Install Railway CLI
+      run: |
+        bash <(curl -fsSL https://railway.app/install.sh)
+        echo "$HOME/.railway/bin" >> $GITHUB_PATH
+        
+    - name: Deploy to Railway
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        echo "Starting deployment to Railway..."
+        $HOME/.railway/bin/railway up --detach
+        
+    - name: Deploy Success
+      run: echo "✅ Deployed to Railway successfully"
