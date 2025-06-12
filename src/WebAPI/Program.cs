@@ -6,6 +6,19 @@ using WebAPI.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+var aspnetUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+
+if (!string.IsNullOrEmpty(aspnetUrls))
+{
+    // Para docker-compose
+    Console.WriteLine($"Docker mode - Using: {aspnetUrls}");
+}
+else
+{
+    // Railway o local - configurar manualmente
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
