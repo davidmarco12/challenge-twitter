@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Configurar puerto para Railway
-//var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-//builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
