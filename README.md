@@ -15,6 +15,9 @@ API REST desarrollada en .NET 8.
 - **PostgreSQL** - Base de datos
 - **Docker & Docker Compose** - Containerización
 - **Swagger/OpenAPI** - Documentación de API
+- **Railway** - Hosting
+- **Github Actions** - CI/CD
+
 
 ## 📋 Prerrequisitos
 
@@ -43,7 +46,7 @@ El proyecto viene con configuración por defecto. Si deseas personalizar:
 
 Variables disponibles:
 ``` "ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=TwitterAPI;Username=postgres;Password=YourStrong@Passw0rd;Trust Server Certificate=true"
+  "DefaultConnection": "Host=database.server;Port=5432;Database=TwitterAPI;Username=postgres;Password=YourStrong@Passw0rd;Trust Server Certificate=true"
 }
 ```
 
@@ -61,9 +64,9 @@ docker-compose up --build -d
 
 - **API**: http://localhost:5000
 - **Swagger UI**: http://localhost:5000/swagger
-- **pgAdmin** (admin DB): http://localhost:8080
   - username: `postgres`
   - Password: `YourStrong@Passw0rd`
+- **Adminer**: http://localhost:8080/
 
 ## 🗄️ Servicios Incluidos
 
@@ -71,62 +74,19 @@ docker-compose up --build -d
 |----------|--------|-------------|
 | **twitterapi-app** | 5000 | API principal de TwitterAPI |
 | **database.server** | 5432 | Base de datos PostgreSQL |
-| **pgAdmin** | 8080 | Interfaz web para administrar PostgreSQL |
 
-## 📝 Comandos Útiles
+Tambien se incluyo un adminer papra la visualizacion de las tablas.
 
-### Gestión de contenedores
+Hay un scripts en -> src/scripts/init-database.sql para popular las tablas.
 
-```bash
-# Ver logs de todos los servicios
-docker-compose logs -f
-
-# Ver logs solo de la API
-docker-compose logs -f twitterapi-app
-
-# Ver logs solo de la base de datos
-docker-compose logs -f database.server
-
-# Parar todos los servicios
-docker-compose down
-
-# Parar y eliminar volúmenes (⚠️ elimina datos de DB)
-docker-compose down -v
-
-# Reconstruir solo un servicio
-docker-compose up --build twitterapi-app
-```
-
-### Desarrollo
-
-```bash
-# Reiniciar solo la aplicación (útil durante desarrollo)
-docker-compose restart twitterapi-app
-
-# Ver el estado de los servicios
-docker-compose ps
-
-# Acceder al contenedor de la aplicación
-docker exec -it twitterapi-app bash
-```
 
 ## 📚 Uso de la API
 
-### Endpoints principales
+### Swagger
 
 Una vez que la aplicación esté corriendo, puedes acceder a:
 
 - **Swagger UI**: http://localhost:5000/swagger
 - **Health Check**: http://localhost:5000/health
 
-### Ejemplos con curl
 
-```bash
-# Health check
-curl http://localhost:5000/health
-
-
-### Desarrollo local
-```bash
-docker-compose up --build
-```
