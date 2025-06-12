@@ -41,7 +41,13 @@
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs
-
+  admin:
+    image: adminer
+    restart: always
+    depends_on: 
+      - database.server
+    ports:
+      - 8080:8080
 
 volumes:
   postgres_data:

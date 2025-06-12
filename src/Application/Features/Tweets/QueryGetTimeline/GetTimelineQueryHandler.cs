@@ -1,18 +1,9 @@
 ﻿using Application.Dtos;
-using Application.Features.Users.GetUsersQuery;
 using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using TwitterAPI.Application.Abstractions.Messaging;
 using TwitterAPI.Domain.Abstractions;
-using TwitterAPI.Domain.Entities;
 using TwitterAPI.Domain.Entities.Tweet;
 using TwitterAPI.Interfaces.Responses;
-using TwitterAPI.Responses;
 
 namespace Application.Features.Tweets.QueryGetTimeline
 {
