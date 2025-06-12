@@ -1,0 +1,7 @@
+- Un usuario no deberia seguirse asi mismo
+- Un usuario no deberia volver a seguir al usuario que ya siguio
+- No deberia dar unfollow
+- El limite de tweet deberia ser entre 3 a 280 caracteres.
+- No ver tweets si no se sigue al usuario
+- Se incluira el espacio en blanco como un caracter.
+

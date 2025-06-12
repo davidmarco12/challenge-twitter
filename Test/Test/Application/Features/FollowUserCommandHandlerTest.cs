@@ -4,10 +4,6 @@ using Application.Features.Follow.CommandFollowUser;
 using Application.DTOs;
 using FluentAssertions;
 using TwitterAPI.Domain.Abstractions;
-using NUnit.Framework;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Interfaces;
 
 namespace Test.Application.Features
