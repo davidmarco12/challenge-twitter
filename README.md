@@ -66,6 +66,7 @@ docker-compose up --build -d
 - **Swagger UI**: http://localhost:5000/swagger
   - username: `postgres`
   - Password: `YourStrong@Passw0rd`
+- **Adminer**: http://localhost:8080/
 
 ## 🗄️ Servicios Incluidos
 
