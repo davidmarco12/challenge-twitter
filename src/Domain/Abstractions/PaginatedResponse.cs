@@ -11,11 +11,11 @@
             this.PaginationData = new PaginationData();
         }
 
-        protected PaginatedResponse(ICollection<T?>? data, PaginationData painationData, bool isSuccess, List<Error?>? error = null)
+        protected PaginatedResponse(ICollection<T?>? data, PaginationData paginationData, bool isSuccess, List<Error?>? error = null)
             : base(isSuccess, error)
         {
             this.Data = data;
-            this.PaginationData = painationData;
+            this.PaginationData = paginationData;
         }
 
         public PaginationData PaginationData { get; set; }

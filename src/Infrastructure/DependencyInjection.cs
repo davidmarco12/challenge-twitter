@@ -40,7 +40,7 @@ namespace Infrastructure
             });
 
             // Cache Service
-            services.AddScoped<ICacheService, MemoryCacheService>();
+            services.AddSingleton<ICacheService, MemoryCacheService>();
 
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();

@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TwittetAPI.Domain.Abstractions;
 
 namespace Infrastructure.Cache
@@ -50,17 +45,13 @@ namespace Infrastructure.Cache
             }
             catch (JsonException ex)
             {
-                Console.WriteLine("JSON deserialization error for cache key: {CacheKey}", key);
-
                 // Limpiar cache entry corrupto
                 _cache.Remove(key);
                 _cacheKeys.TryRemove(key, out _);
-
                 return Task.FromResult<T?>(null);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error retrieving cache key: {CacheKey}", key);
                 return Task.FromResult<T?>(null);
             }
         }
@@ -69,7 +60,7 @@ namespace Infrastructure.Cache
         {
             try
             {
-                // ✅ Serializar a JSON
+                //Serializar a JSON
                 var jsonString = JsonSerializer.Serialize(value, JsonOptions);
 
                 var options = new MemoryCacheEntryOptions
@@ -127,7 +118,11 @@ namespace Infrastructure.Cache
         {
             try
             {
-                var regex = new Regex(pattern, RegexOptions.Compiled);
+                // Convertir wildcard pattern a regex
+                // timeline:user:123:* -> timeline:user:123:.*
+                var regexPattern = "^" + Regex.Escape(pattern).Replace("\\*", ".*") + "$";
+                var regex = new Regex(regexPattern, RegexOptions.Compiled);
+
                 var keysToRemove = _cacheKeys.Keys
                     .Where(key => regex.IsMatch(key))
                     .ToList();
@@ -145,6 +140,12 @@ namespace Infrastructure.Cache
                 Console.WriteLine("Error removing cache keys by pattern: {Pattern}", pattern);
                 return Task.CompletedTask;
             }
+        }
+
+        public Task<List<string>> GetAllKeysAsync(CancellationToken cancellationToken = default)
+        {
+            var keys = _cacheKeys.Keys.ToList();
+            return Task.FromResult(keys);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Application.Features.Tweets.CommandCreateTweet;
+﻿using Application.Dtos;
+using Application.DTOs;
+using Application.Features.Tweets.CommandCreateTweet;
 using Application.Features.Tweets.QueryGetTimeline;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +24,7 @@ namespace WebAPI.Controllers
             var query = new GetTimelineQuery(dto);
             var result = await _mediator.Send(query);
 
-            return result.IsSuccess ? Ok(result) : this.NotFound();
+            return result.IsSuccess ? Ok(result) : this.NotFound(result);
         }
 
         [HttpPost]
@@ -32,7 +34,7 @@ namespace WebAPI.Controllers
 
             var result = await this._mediator.Send(command);
 
-            return result.IsSuccess ? Ok(result) : BadRequest();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

@@ -2,10 +2,10 @@
 {
     public record Error(string code, string description)
     {
-        public static readonly Error FollowError = new("FOLLOW_ERROR", "Follow ERROR");
+        public static readonly Error FollowError = new("FOLLOW_ERROR", "Same user");
 
-        public static readonly Error NullValue = new("GENERIC_ERROR.Valor_Nulo", "Un valor nulo fue ingresado");
+        public static readonly Error InvalidAPIResponse = new("GENERIC_ERROR.Invalid_API_Response", "Invalid API Response");
 
-        public static readonly Error InvalidAPIResponse = new("GENERIC_ERROR.Invalid_API_Response", "La respuesta de la API fue nula o inválida");
+        public static Error Custom(string code, string description) => new(code, description);
     }
 }

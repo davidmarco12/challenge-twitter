@@ -1,4 +1,5 @@
-﻿using TwitterAPI.Application.Abstractions.Messaging;
+﻿using Application.DTOs;
+using TwitterAPI.Application.Abstractions.Messaging;
 using TwitterAPI.Domain.Abstractions;
 using TwitterAPI.Domain.Entities;
 using TwitterAPI.Interfaces.Responses;
@@ -17,17 +18,15 @@ namespace Application.Features.Users.GetUsersQuery
 
         public async Task<IPaginatedResponse<UserDTO>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await this._userRepository.GetAllAsync(cancellationToken);
-            
-            var userList = users.Select(user => new UserDTO
+            var (users, paginationData) = await this._userRepository.GetPaginatedUsers(request.dto.PageSize, request.dto.PageNumber);
+
+            var userListDTO = users?.Select(user => new UserDTO
             {
                 Id = user.Id,
                 username = user.UserName
-            }).ToList();
+            }).ToList() ?? new List<UserDTO>();
 
-            var paginationData = new PaginationData();
-
-            return PaginatedResponse<UserDTO>.Success(userList, paginationData);
+            return PaginatedResponse<UserDTO>.Success(userListDTO!, paginationData);
         }
     }
 }

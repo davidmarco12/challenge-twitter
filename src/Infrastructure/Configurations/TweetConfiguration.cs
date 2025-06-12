@@ -9,6 +9,8 @@ namespace Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Tweet> builder)
         {
             builder.ToTable(nameof(Tweet), "Tweet");
+
+            builder.Property(e => e.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Content).HasMaxLength(128);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Application.Features.Users.GetUsersQuery;
+﻿using Application.Dtos;
+using Application.Features.Users.GetUsersQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Application.Features.Tweets.QueryGetTimeline
 
         public async Task<IPaginatedResponse<TimelineDTO>> Handle(GetTimelineQuery request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"timeline:user:{request.dto.userId}:page:{request.dto.pageNumber}:size:{request.dto.pageSize}";
+            var cacheKey = $"timeline:user:{request.dto.UserId}:page:{request.dto.PageNumber}:size:{request.dto.PageSize}";
 
             try
             {
@@ -36,31 +37,31 @@ namespace Application.Features.Tweets.QueryGetTimeline
                 if (cachedData != null)
                 {
                     var paginationData = cachedData.Pagination.ToPaginationData();
-                    return PaginatedResponse<TimelineDTO>.Success(cachedData.Timeline, paginationData);
+                    return PaginatedResponse<TimelineDTO>.Success(cachedData.Timeline!, paginationData);
                 }
 
                 // Cache miss - obtener de repository
                 var (tweets, pagination) = await _tweetRepository.GetTimeline(
-                    request.dto.userId,
-                    request.dto.pageSize,
-                    request.dto.pageNumber);
+                    request.dto.UserId,
+                    request.dto.PageSize,
+                    request.dto.PageNumber);
 
                 var timeLine = tweets.Select(tweet => new TimelineDTO
                 {
-                    content = tweet.Content,
-                    username = tweet.User!.UserName
+                    Id = tweet.Id,
+                    Content = tweet.Content,
+                    Username = tweet.User!.UserName
                 }).ToList();
 
                 var dataToCache = new CachedTimelineData(timeLine, pagination);
 
                 await _cacheService.SetAsync(cacheKey, dataToCache, TimeSpan.FromMinutes(15), cancellationToken);
 
-
-                return PaginatedResponse<TimelineDTO>.Success(timeLine, pagination);
+                return PaginatedResponse<TimelineDTO>.Success(timeLine!, pagination);
             }
             catch (Exception ex)
             {
-                throw;
+                return PaginatedResponse<TimelineDTO>.Failure(Error.Custom("TIMELINE", "Error in the timeline"));
             }
         }
     }

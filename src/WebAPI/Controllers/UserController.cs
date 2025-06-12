@@ -1,4 +1,5 @@
-﻿using Application.Features.Follow.CommandFollowUser;
+﻿using Application.DTOs;
+using Application.Features.Follow.CommandFollowUser;
 using Application.Features.Users.GetUsersQuery;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ namespace WebAPI.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(PaginatedResponse<UserDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUsers([FromQuery] GetUsersDTO dto, CancellationToken cancellationToken)
         {
-            var query = new GetUsersQuery();
+            var query = new GetUsersQuery(dto);
 
             var result = await this._mediator.Send(query, cancellationToken);
 

@@ -8,6 +8,6 @@ namespace TwitterAPI.Domain.Abstractions
 
         public int Id { get; init; }
 
-        public DateTime CreationDate { get; init; } = DateTime.Now;
+        public DateTime CreationDate { get; init; } = DateTime.UtcNow;
     }
 }

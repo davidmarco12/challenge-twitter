@@ -9,13 +9,19 @@ namespace Domain.Extentions
         {
             if (pageNumber <= 0)
             {
-                throw new ArgumentException("PageNumber no puede ser menor a 1");
+                pageNumber = 1;
             }
 
             if (pageSize <= 0)
             {
-                throw new ArgumentException("PageSize no puede ser menor a 1");
+                pageSize = 10;
             }
+
+            if (pageSize > 40)
+            {
+                pageSize = 40;
+            }
+
 
             var paginationMetadata = await queryable.GetPaginationMetadataAsync(pageNumber, pageSize);
             queryable = queryable.ApplyPagination(pageNumber, pageSize);
@@ -28,7 +34,7 @@ namespace Domain.Extentions
         {
             if (pageSize <= 0)
             {
-                throw new ArgumentException("PageSize no puede ser menor a 1");
+                pageSize = 1;
             }
 
             int total = await query.CountAsync();

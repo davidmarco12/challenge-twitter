@@ -17,6 +17,8 @@ namespace Infrastructure.Configurations
             builder.ToTable("UserFollow", "User");
 
             builder.HasKey(e => e.Id);
+
+            builder.Property(e => e.Id).ValueGeneratedOnAdd();
             builder.HasIndex(uf => new { uf.FollowerId, uf.FollowingId })
             .IsUnique();
 

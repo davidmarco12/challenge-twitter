@@ -16,22 +16,22 @@ namespace Application.Features.Follow.CommandFollowUser
 
         public async Task<IResponse> Handle(FollowUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.dto.followerId == request.dto.userId)
+            if (request.dto.FollowerId == request.dto.FollowingId)
             {
                 return Response.Failure(Error.FollowError);
             }
 
             var follow = new UserFollow
             {
-                FollowingId = request.dto.userId,
-                FollowerId = request.dto.followerId 
+                FollowingId = request.dto.FollowingId,
+                FollowerId = request.dto.FollowerId 
             };
 
             await this._userFollowRepository.AddAsync(follow, cancellationToken);
 
             await this._userFollowRepository.SaveAsync(cancellationToken);
 
-            return Response.Success(follow);
+            return Response.Success();
         }
     }
 }
