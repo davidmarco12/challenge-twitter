@@ -1,8 +1,4 @@
-﻿# docker-compose.yml (en la raíz: TwitterAPI/docker-compose.yml)
-version: '3.8'
-
-services:
-  # SQL Server Database
+﻿services:
   database.server:
     image: postgres:17.5-alpine
     container_name: database.server
@@ -33,10 +29,10 @@ services:
     container_name: twitterapi-app
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: http://+:5000
       ConnectionStrings__DefaultConnection: "Host=database.server;Port=5432;Database=TwitterAPI;Username=postgres;Password=YourStrong@Passw0rd;Trust Server Certificate=true"
     ports:
-      - "5000:8080"
+      - "5000:5000"
     depends_on:
       database.server:
         condition: service_healthy
@@ -45,13 +41,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs
-  admin:
-    image: adminer
-    restart: always
-    depends_on: 
-      - database.server
-    ports:
-      - 8080:8080
 
 
 volumes:
