@@ -1,13 +1,23 @@
 ﻿using Infrastructure;
 using Application;
 using Infrastructure.Extentions;
+using WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Configurar puerto para Railway
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
+}
+else
+{
+    // Configuración para Railway/Producción
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -40,6 +50,8 @@ app.UseCors(policy =>
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
