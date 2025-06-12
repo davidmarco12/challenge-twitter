@@ -1,4 +1,9 @@
+
 [![Build and Test](https://github.com/davidmarco12/challenge-twitter/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/davidmarco12/challenge-twitter/actions/workflows/ci-cd.yml)
+
+[![imagen](https://github.com/user-attachments/assets/c93c011c-8f64-4676-9d6b-b377380c13e4)](https://challenge-twitter-production.up.railway.app/swagger/index.html)
+
+
 # TwitterAPI
 
 API REST desarrollada en .NET 8.
