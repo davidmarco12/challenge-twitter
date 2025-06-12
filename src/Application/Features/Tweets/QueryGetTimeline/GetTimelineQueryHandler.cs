@@ -50,7 +50,9 @@ namespace Application.Features.Tweets.QueryGetTimeline
                 {
                     Id = tweet.Id,
                     Content = tweet.Content,
-                    Username = tweet.User!.UserName
+                    Username = tweet.User!.UserName,
+                    UserId = tweet.User!.Id,
+                    Date = tweet.CreationDate,
                 }).ToList();
 
                 var dataToCache = new CachedTimelineData(timeLine, pagination);
