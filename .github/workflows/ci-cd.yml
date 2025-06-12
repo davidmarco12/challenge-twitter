@@ -39,7 +39,7 @@ jobs:
       run: dotnet build --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
@@ -70,7 +70,7 @@ jobs:
           ${{ runner.os }}-nuget-
         
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: build-artifacts
         
