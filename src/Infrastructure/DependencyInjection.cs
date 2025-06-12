@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TwitterAPI.Domain.Entities.Tweet;
 using Infrastructure.Cache;
-using TwittetAPI.Domain.Abstractions;
+using Domain.Interfaces;
 
 namespace Infrastructure
 {

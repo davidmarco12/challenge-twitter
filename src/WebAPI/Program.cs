@@ -8,7 +8,6 @@ var config = builder.Configuration;
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 
-// Siempre usar PORT en producción, ignorar ASPNETCORE_URLS problemáticos
 if (builder.Environment.IsProduction())
 {
     builder.WebHost.UseUrls($"http://0.0.0.0:{port}");

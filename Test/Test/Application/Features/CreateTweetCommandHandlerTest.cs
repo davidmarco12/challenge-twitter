@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TwitterAPI.Domain.Entities.Tweet;
 using TwitterAPI.Domain.Entities;
-using TwittetAPI.Domain.Abstractions;
 using Application.DTOs;
+using Domain.Interfaces;
 
 namespace Test.Application.Features
 {

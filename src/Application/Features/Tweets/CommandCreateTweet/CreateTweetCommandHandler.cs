@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Domain.Interfaces;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ using TwitterAPI.Domain.Abstractions;
 using TwitterAPI.Domain.Entities;
 using TwitterAPI.Domain.Entities.Tweet;
 using TwitterAPI.Interfaces.Responses;
-using TwittetAPI.Domain.Abstractions;
 
 namespace Application.Features.Tweets.CommandCreateTweet
 {

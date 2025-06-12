@@ -1,4 +1,4 @@
-﻿namespace TwitterAPI.Domain.Abstractions
+﻿namespace Domain.Interfaces
 {
     using System.Linq.Expressions;
 

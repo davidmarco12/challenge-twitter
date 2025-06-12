@@ -1,4 +1,4 @@
-﻿using TwitterAPI.Domain.Abstractions;
+﻿using Domain.Interfaces;
 
 namespace TwitterAPI.Domain.Entities
 {

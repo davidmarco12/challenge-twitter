@@ -1,4 +1,4 @@
-﻿namespace TwittetAPI.Domain.Abstractions
+﻿namespace Domain.Interfaces
 {
     public interface ICacheService
     {

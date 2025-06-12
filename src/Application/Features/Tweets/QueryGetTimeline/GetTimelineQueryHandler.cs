@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Features.Users.GetUsersQuery;
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,6 @@ using TwitterAPI.Domain.Entities;
 using TwitterAPI.Domain.Entities.Tweet;
 using TwitterAPI.Interfaces.Responses;
 using TwitterAPI.Responses;
-using TwittetAPI.Domain.Abstractions;
 
 namespace Application.Features.Tweets.QueryGetTimeline
 {

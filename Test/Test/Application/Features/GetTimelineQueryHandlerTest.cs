@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using TwitterAPI.Domain.Entities.Tweet;
 using TwitterAPI.Domain.Entities;
 using TwitterAPI.Responses;
-using TwittetAPI.Domain.Abstractions;
 using FluentAssertions;
+using Domain.Interfaces;
 
 namespace Test.Application.Features
 {

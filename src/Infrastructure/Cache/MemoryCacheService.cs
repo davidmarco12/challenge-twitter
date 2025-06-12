@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Domain.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using TwittetAPI.Domain.Abstractions;
 
 namespace Infrastructure.Cache
 {
