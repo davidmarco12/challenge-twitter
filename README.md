@@ -15,6 +15,9 @@ API REST desarrollada en .NET 8.
 - **PostgreSQL** - Base de datos
 - **Docker & Docker Compose** - Containerización
 - **Swagger/OpenAPI** - Documentación de API
+- **Railway** - Hosting
+- **Github Actions** - CI/CD
+
 
 ## 📋 Prerrequisitos
 
