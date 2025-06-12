@@ -1,3 +1,4 @@
+[![Build and Test](https://github.com/davidmarco12/challenge-twitter/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/davidmarco12/challenge-twitter/actions/workflows/ci-cd.yml)
 # TwitterAPI
 
 API REST desarrollada en .NET 8.
